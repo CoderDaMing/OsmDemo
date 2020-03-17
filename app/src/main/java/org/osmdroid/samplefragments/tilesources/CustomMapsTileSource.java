@@ -11,7 +11,7 @@ import org.osmdroid.util.MapTileIndex;
  * 为了保密高德、谷歌.cn、天地图使用的是GCJ02（火星坐标系），手机gps数据是WGS-84坐标系，需要进行转换。
  * 为什么没有百度，因为百度的瓦片分割和高德谷歌都不一样，还有百度使用的自己的BD09坐标系 即百度坐标系，估计GCJ02坐标系经加密后的坐标系。
  */
-public class GoogleTileSource extends TileSourceFactory {
+public class CustomMapsTileSource extends TileSourceFactory {
     //谷歌卫星混合
     public static final OnlineTileSourceBase GOOGLE_HYBRID = new XYTileSource("Google-Hybrid",
             0, 19, 512, ".png", new String[]{
