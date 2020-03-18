@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GoogleMap</string>
+    <string name="sdcardstate">External Storage State:</string>
+</resources>

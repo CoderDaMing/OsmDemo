@@ -1,3 +1,4 @@
 rootProject.name='OsmDemo'
 include ':app'
 include ':xlapp'
+include ':googlemap'
