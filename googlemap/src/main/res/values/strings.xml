@@ -1,4 +1,28 @@
 <resources>
     <string name="app_name">GoogleMap</string>
     <string name="sdcardstate">External Storage State:</string>
+    <string name="change_phone_location_mode">Please Open Gps Setting</string>
+
+    <string name="activity_offline_list">Offline List</string>
+    <string name="activity_offline_map">Offline Map</string>
+
+    <string name="format_distance_meters">%s m</string>
+    <string name="format_distance_kilometers">%s km</string>
+    <string name="format_distance_miles">%s mi</string>
+    <string name="format_distance_nautical_miles">%s nm</string>
+    <string name="format_distance_feet">%s ft</string>
+
+    <string name="compass">Compass</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="cache_current_size">Cache Current Size</string>
+    <string name="cache_manager">Cache Manager</string>
+    <string name="cache_manager_description">The Cache Manager lets you manage what\'s cached on this device and enables you to download and cache tiles locally. Keep in mind, there may be legal implications. Use with caution and be sure to read the usage agreement(s) or terms of service with the tile source.</string>
+    <string name="cache_download">Start Download</string>
+    <string name="cache_delete_area">Delete Area</string>
+
+    <string name="offline_list_activity_2">层级:</string>
+    <string name="offline_map_4">12-17</string>
+    <string name="offline_map_3">文件夹名称</string>
+    <string name="btn_download">下载</string>
 </resources>

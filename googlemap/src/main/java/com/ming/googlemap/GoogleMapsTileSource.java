@@ -1,5 +1,6 @@
 package com.ming.googlemap;
 
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.LocaleList;
 import android.util.ArrayMap;
@@ -19,12 +20,8 @@ public class GoogleMapsTileSource extends TileSourceFactory {
     /**
      * url
      */
-    private static final String[] URLS = new String[]{"http://mt0.google.com", "http://mt1.google.com", "http://mt2.google.com", "http://mt3.google.com"};
-
-    /**
-     * Names
-     */
-    public static final String[] NAMES = {"Google-Hybrid", "Google-Roads", "Google-Terrain-Hybrid"};
+//    private static final String[] URLS = new String[]{"http://mt0.google.com", "http://mt1.google.com", "http://mt2.google.com", "http://mt3.google.com"};
+    private static final String[] URLS = new String[]{"http://mt0.google.cn", "http://mt1.google.cn", "http://mt2.google.cn", "http://mt3.google.cn"};
 
     /**
      * Params
@@ -61,10 +58,10 @@ public class GoogleMapsTileSource extends TileSourceFactory {
     /**
      * DisplayMetrics
      */
-    private static final DisplayMetrics dm = OsmApplication.getInstance().getResources().getDisplayMetrics();
+    private static final DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
 
     //谷歌卫星混合
-    private static final OnlineTileSourceBase GOOGLE_HYBRID = new XYTileSource(NAMES[0],
+    private static final OnlineTileSourceBase GOOGLE_HYBRID = new XYTileSource(MapType.GOOGLE_HYBRID,
             0, 19, (int) (256.0f * dm.density), ".png", URLS) {
         @Override
         public String getTileURLString(long pMapTileIndex) {
@@ -76,7 +73,7 @@ public class GoogleMapsTileSource extends TileSourceFactory {
     };
 
     //谷歌地图
-    private static final OnlineTileSourceBase GOOGLE_ROADS = new XYTileSource(NAMES[1],
+    private static final OnlineTileSourceBase GOOGLE_ROADS = new XYTileSource(MapType.GOOGLE_ROADS,
             0, 19, (int) (256.0f * dm.density), ".png", URLS) {
         @Override
         public String getTileURLString(long pMapTileIndex) {
@@ -88,7 +85,7 @@ public class GoogleMapsTileSource extends TileSourceFactory {
     };
 
     //谷歌地形带标注
-    private static final OnlineTileSourceBase GOOGLE_TERRAIN_HYBRID = new XYTileSource(NAMES[2],
+    private static final OnlineTileSourceBase GOOGLE_TERRAIN_HYBRID = new XYTileSource(MapType.GOOGLE_TERRAIN_HYBRID,
             0, 19, (int) (256.0f * dm.density), ".png", URLS) {
         @Override
         public String getTileURLString(long pMapTileIndex) {
@@ -108,9 +105,16 @@ public class GoogleMapsTileSource extends TileSourceFactory {
      * Last Put Source in Map
      */
     static {
-        TILE_SOURCE_MAP.put(TileSourceFactory.DEFAULT_TILE_SOURCE.name(), TileSourceFactory.DEFAULT_TILE_SOURCE);
-        TILE_SOURCE_MAP.put(NAMES[0], GOOGLE_HYBRID);
-        TILE_SOURCE_MAP.put(NAMES[1], GOOGLE_ROADS);
-        TILE_SOURCE_MAP.put(NAMES[2], GOOGLE_TERRAIN_HYBRID);
+        TILE_SOURCE_MAP.put(MapType.MAPNIK, TileSourceFactory.MAPNIK);
+        TILE_SOURCE_MAP.put(MapType.GOOGLE_HYBRID, GOOGLE_HYBRID);
+        TILE_SOURCE_MAP.put(MapType.GOOGLE_ROADS, GOOGLE_ROADS);
+        TILE_SOURCE_MAP.put(MapType.GOOGLE_TERRAIN_HYBRID, GOOGLE_TERRAIN_HYBRID);
+    }
+
+    /**
+     * Get Tile Source Names
+     */
+    public static String[] getTileSourceNames() {
+        return new String[]{MapType.MAPNIK, MapType.GOOGLE_HYBRID, MapType.GOOGLE_ROADS, MapType.GOOGLE_TERRAIN_HYBRID};
     }
 }

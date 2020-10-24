@@ -1,9 +1,10 @@
 package com.ming.googlemap;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -11,14 +12,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
+public class OfflineMapActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "OfflineMapActivity";
+    private static final String MAP_FRAGMENT_TAG = "org.osmdroid.offline_map_fragment_tag";
 
-public class GoogleMapActivity extends AppCompatActivity {
-    private static final String TAG = "GoogleMapActivity";
-    private static final String MAP_FRAGMENT_TAG = "org.osmdroid.GOOGLE_MAP_FRAGMENT_TAG";
+    public static final String PARAMS_OFFLINE = "offline";
+    public static final String PARAMS_FUNCTION = "function";
+    public static final int FUNCTION_SHOW = 0;
+    public static final int FUNCTION_ADD = 1;
+
+    private Offline offline = null;
+    private int mapFunction = FUNCTION_SHOW;
+    private GoogleMapFragment googleMapFragment;
     /**
      * The idea behind that is to force a MapView refresh when switching from offline to online.
      * If you don't do that, the map may display - when online - approximated tiles
@@ -32,52 +39,55 @@ public class GoogleMapActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-                Log.e(TAG, "networkReceiver intent = [" + intent + "]");
-                googleMapFragment.invalidateMapView();
+                if (mapFunction == FUNCTION_ADD) {
+                    Log.e(TAG, "networkReceiver intent = [" + intent + "]");
+                    googleMapFragment.invalidateMapView();
+                }
             } catch (NullPointerException e) {
                 // lazy handling of an improbable NPE
             }
         }
     };
 
-    private GoogleMapFragment googleMapFragment;
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_google_map);
-
-        MainActivity.updateStoragePreferences(this);    //needed for unit tests
+        setContentView(R.layout.activity_offline_map);
 
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        FragmentManager fm = this.getSupportFragmentManager();
-        if (fm.findFragmentByTag(MAP_FRAGMENT_TAG) == null) {
-            googleMapFragment = GoogleMapFragment.newInstance();
-            fm.beginTransaction().add(R.id.google_map_container, googleMapFragment, MAP_FRAGMENT_TAG).commit();
+        Intent intent = getIntent();
+        if (intent != null) {
+            offline = intent.getParcelableExtra(PARAMS_OFFLINE);
+            mapFunction = intent.getIntExtra(PARAMS_FUNCTION, FUNCTION_SHOW);
         }
 
-        findViewById(R.id.btn_change_source).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(GoogleMapActivity.this)
-                        .setTitle("切换google图源")
-                        .setItems(GoogleMapsTileSource.NAMES, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                googleMapFragment.setTileSource(GoogleMapsTileSource.NAMES[i]);
-                                dialogInterface.dismiss();
-                            }
-                        });
-                builder.create().show();
+        FragmentManager fm = this.getSupportFragmentManager();
+        if (fm.findFragmentByTag(MAP_FRAGMENT_TAG) == null) {
+            Bundle args = new Bundle();
+            if (offline != null) {
+                offline.setUseDataConnection(mapFunction == FUNCTION_ADD);
             }
-        });
+            args.putParcelable(PARAMS_OFFLINE, offline);
+            googleMapFragment = GoogleMapFragment.newInstance(args);
+            fm.beginTransaction().add(R.id.offline_map_container, googleMapFragment, MAP_FRAGMENT_TAG).commit();
+        }
+
+        //title
+        TextView textTitle = findViewById(R.id.tv_back_title);
+        textTitle.setText(getString(R.string.activity_offline_map));
+        findViewById(R.id.fl_back_title).setOnClickListener(this);
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fl_back_title:
+                finish();
+                break;
+            default:
+                break;
+        }
     }
 
     /**
